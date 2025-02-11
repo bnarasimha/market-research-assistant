@@ -1,0 +1,45 @@
+import os
+from dotenv import load_dotenv
+from crewai import Crew, Flow
+from crewai.flow.flow import listen, start
+from product_research import product_researcher, product_research_task
+from competitor_research import competitor_analyst, competitor_research_task
+from comparison_research import comparison_analyst, comparison_research_task
+
+# Load environment variables
+load_dotenv()
+
+class MarketResearchAssistant(Flow):
+    @start()
+    def get_product_narsi_info(self):  
+        product_research_crew = Crew(
+            agents=[product_researcher], 
+            tasks=[product_research_task]
+        )
+
+        result = product_research_crew.kickoff()
+        return result
+    
+    @listen(get_product_narsi_info)
+    def get_competitor_info(self):
+        competitor_research_crew = Crew(
+            agents=[competitor_analyst], 
+            tasks=[competitor_research_task]
+        )
+
+        result = competitor_research_crew.kickoff()
+        return result
+
+    @listen(get_competitor_info)
+    def get_comparison_info(self):
+        comparison_research_crew = Crew(
+            agents=[comparison_analyst], 
+            tasks=[comparison_research_task]
+        )
+
+        result = comparison_research_crew.kickoff()
+        return result
+
+if __name__ == "__main__":
+    flow = MarketResearchAssistant()
+    result = flow.kickoff()  
