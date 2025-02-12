@@ -30,29 +30,10 @@ def display_comparison_table(comparison_list):
         # Add title
         st.write("")
         st.subheader(f" {st.session_state.my_product} Vs {st.session_state.competitor1} Vs {st.session_state.competitor2}")
-        
-        # Create three columns for filters
-        col1, col2, col3 = st.columns(3)
-        
-        with col1:
-            show_my_product = st.checkbox(f'Show {st.session_state.my_product}', value=True)
-        with col2:
-            show_competitor1 = st.checkbox(f'Show {st.session_state.competitor1}', value=True)
-        with col3:
-            show_competitor2 = st.checkbox(f'Show {st.session_state.competitor2}', value=True)
-        
-        # Filter columns based on checkboxes
-        columns_to_show = []
-        if show_my_product:
-            columns_to_show.append(st.session_state.my_product)
-        if show_competitor1:
-            columns_to_show.append(st.session_state.competitor1)
-        if show_competitor2:
-            columns_to_show.append(st.session_state.competitor2)
-        
+                
         # Display the filtered DataFrame
         st.dataframe(
-            df[columns_to_show],
+            df,
             use_container_width=True,
             height=400,
         )
@@ -72,7 +53,7 @@ def display_comparison_table(comparison_list):
             with st.expander(Category):
                 category_data = df.loc[Category]
                 for column, value in category_data.items():
-                    if column in columns_to_show:
+                    if column in df.columns:
                         st.write(f"**{column}:** {value}")
                         
     except Exception as e:
@@ -81,6 +62,8 @@ def display_comparison_table(comparison_list):
 
 # Usage
 if __name__ == "__main__":
+    st.set_page_config(layout="wide")
+
     st.title("Product Comparison Analysis")
     
     # Add competitor input fields
