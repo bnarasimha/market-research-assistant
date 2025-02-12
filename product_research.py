@@ -3,16 +3,19 @@ from openai import OpenAI
 from crewai.tools import tool
 from pydantic import BaseModel, Field
 import os
+import streamlit as st
+
+my_product = st.session_state.get("my_product")
 
 @tool("Product Research Tool")
-def ProductResearchTool() -> str:
+def ProductResearchTool(my_product: str) -> str:
     """
-    Fetches the information about Product Narsi from the GenAI Platform
+    Fetches the information about {my_product} from the GenAI Platform
     Args:
-        None
+        my_product: The name of the product to research.
 
     Returns:
-        str: The information about Product Narsi.
+        str: The information about {my_product}.
     """
 
     agent_endpoint = os.getenv("GENAI_PRODUCT_RESEARCHER_AGENT_ENDPOINT")
@@ -25,7 +28,7 @@ def ProductResearchTool() -> str:
 
     response = client.chat.completions.create(
         model = "DeepSeek R1 Distill Llama 70B",
-        messages = [{"role": "user", "content": "You are an expert Product Researcher.  You are expert at analyzing product features and capabilities using AI platforms. Your task is to Research and gather detailed information about Product Narsi whose details will be available to you."}],
+        messages = [{"role": "user", "content": f"You are an expert Product Researcher.  You are expert at analyzing product features and capabilities using AI platforms. Your task is to Research and gather detailed information about {my_product} whose details will be available to you."}],
     )
 
     return response.choices[0].message.content
@@ -33,15 +36,15 @@ def ProductResearchTool() -> str:
 
 product_researcher = Agent(
     role="Product Researcher",
-    goal="""Research and gather detailed information about Product Narsi.""",
-    backstory="Expert at analyzing product features and capabilities using AI platforms",
-    tools=[ProductResearchTool],
+    goal="Conduct comprehensive research to gather in-depth information about {my_product}, focusing on its features and capabilities.",
+    backstory="A seasoned expert in product analysis, leveraging advanced AI platforms to extract and synthesize detailed insights.",
+    abilities=[ProductResearchTool],
     verbose=True
 )
 
 product_research_task = Task(
-    description="Research and gather detailed information about Product Narsi",
-    expected_output="Detailed information about Product Narsi features and capabilities",
+    description="Conduct a thorough investigation to compile detailed information on the features and capabilities of {my_product}.",
+    expected_output="A comprehensive report detailing the features and capabilities of {my_product}.",
     agent=product_researcher,
     verbose=True
 )

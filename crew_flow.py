@@ -27,10 +27,11 @@ class MarketResearchAssistant(Flow):
             tasks=[competitor_research_task]
         )
 
+        my_product = st.session_state.get("my_product")
         competitor1 = st.session_state.get("competitor1")
         competitor2 = st.session_state.get("competitor2") 
 
-        result = competitor_research_crew.kickoff(inputs={"competitor1": competitor1, "competitor2": competitor2})
+        result = competitor_research_crew.kickoff(inputs={"my_product": my_product, "competitor1": competitor1, "competitor2": competitor2})
         return result
 
     @listen(get_competitor_info)
