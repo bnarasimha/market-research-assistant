@@ -3,8 +3,6 @@ from openai import OpenAI
 from crewai.tools import tool
 from pydantic import BaseModel, Field
 import os
-class ProductNarsiInfo(BaseModel):
-    info: str = Field(..., description="Detailed information about Product Narsi features and capabilities")
 
 @tool("Product Research Tool")
 def ProductResearchTool() -> str:
@@ -45,6 +43,5 @@ product_research_task = Task(
     description="Research and gather detailed information about Product Narsi",
     expected_output="Detailed information about Product Narsi features and capabilities",
     agent=product_researcher,
-    #output_pydantic=ProductNarsiInfo,
     verbose=True
 )

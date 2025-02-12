@@ -9,9 +9,6 @@ import os
 competitor1 = st.session_state.get("competitor1", "GitHub Copilot")
 competitor2 = st.session_state.get("competitor2", "Cursor") 
 
-class CompetitorInfo(BaseModel):
-    info: str = Field(..., description=f"Detailed information about {competitor1} and {competitor2} products")
-
 @tool("Competitor Research Tool")
 def CompetitorResearchTool() -> str:
     """
@@ -45,7 +42,6 @@ competitor_analyst = Agent(
             goal=f"""Gather detailed information about {competitor1} and {competitor2} products""",
             backstory='Expert at analyzing product features and capabilities using AI platforms',
             expected_output=f'Detailed information about {competitor1} and {competitor2} products',
-            output_pydantic=CompetitorInfo,
             tools=[
                 ScrapeWebsiteTool(name="Scrape Website Tool", description="Use this tool to scrape the website of competitor products"),
                 CompetitorResearchTool
