@@ -27,6 +27,9 @@ def CompetitorResearchTool() -> str:
         api_key = agent_key,
     )
 
+    competitor1 = st.session_state.get("competitor1")
+    competitor2 = st.session_state.get("competitor2") 
+
     response = client.chat.completions.create(
         model = "DeepSeek R1 Distill Llama 70B",
         messages = [{"role": "user", "content": f"""You are an expert Competitor Analyst. Your goal is to gather detailed information about {competitor1} and {competitor2} products."""}],
@@ -36,11 +39,11 @@ def CompetitorResearchTool() -> str:
 
 competitor_analyst = Agent(
             role="Competitor Analyst",
-            goal="Gather detailed information about {competitor1} and {competitor2} products. If the websites are blocked, use Wikipedia to gather information.",
+            goal="Gather detailed information about {competitor1} and {competitor2} products. If the websites are blocked, use Wikipedia to gather information.  Check multiple websites if needed.",
             backstory="Expert at analyzing product features and capabilities using AI platforms",
             expected_output="Detailed information about {competitor1} and {competitor2} products",
             tools=[
-                ScrapeWebsiteTool(name="Scrape Website Tool", description="Use this tool to scrape the website of competitor products"),
+                ScrapeWebsiteTool(name="Scrape Website Tool", description="Use this tool to scrape the website of competitor products."),
                 CompetitorResearchTool
             ],
             verbose=True
