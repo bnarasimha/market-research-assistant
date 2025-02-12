@@ -28,6 +28,7 @@ def display_comparison_table(comparison_list):
         }, inplace=True)
         
         # Add title
+        st.write("")
         st.subheader(f" {st.session_state.my_product} Vs {st.session_state.competitor1} Vs {st.session_state.competitor2}")
         
         # Create three columns for filters

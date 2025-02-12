@@ -45,6 +45,6 @@ product_research_task = Task(
     description="Research and gather detailed information about Product Narsi",
     expected_output="Detailed information about Product Narsi features and capabilities",
     agent=product_researcher,
-    output_pydantic=ProductNarsiInfo,
+    #output_pydantic=ProductNarsiInfo,
     verbose=True
 )
