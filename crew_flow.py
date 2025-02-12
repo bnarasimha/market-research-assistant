@@ -4,9 +4,8 @@ from crewai import Crew, Flow
 from crewai.flow.flow import listen, start
 from product_research import product_researcher, product_research_task
 from competitor_research import competitor_analyst, competitor_research_task
-from comparison_research import comparison_analyst, comparison_research_task
+from comparison_report import comparison_analyst, comparison_research_task
 
-# Load environment variables
 load_dotenv()
 
 class MarketResearchAssistant(Flow):
@@ -43,3 +42,4 @@ class MarketResearchAssistant(Flow):
 if __name__ == "__main__":
     flow = MarketResearchAssistant()
     result = flow.kickoff()  
+    print(result)

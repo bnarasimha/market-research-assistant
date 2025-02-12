@@ -1,0 +1,87 @@
+from crewai import Agent, Task
+from crewai.tools import tool
+from pydantic import BaseModel, Field
+from typing import List
+import streamlit as st
+import os
+from openai import OpenAI
+
+competitor1 = st.session_state.get("competitor1", "GitHub Copilot")
+competitor2 = st.session_state.get("competitor2", "Cursor") 
+
+class Comparison(BaseModel):
+    Category: str = Field(..., description="Category of the comparison")
+    My_Product: str = Field(..., description="Summary of My Product on the category")
+    Competitor1: str = Field(..., description=f"Summary of {competitor1} on the category")
+    Competitor2: str = Field(..., description=f"Summary of {competitor2} on the category")
+
+class ComparisonList(BaseModel):
+    comparisons: List[Comparison] = Field(..., description=f"List of comparisons between My Product and {competitor1} and {competitor2}")
+
+
+@tool("Comparision Report Tool")
+def ComparisionReportTool() -> str:
+    """
+    
+    Given the detailed information about my product and competitor products, provide a detailed summary of the comparison between my product and competitors.
+    
+    Args:
+        None
+
+    Returns:
+        str: The detailed comparison report between my product and competitors.
+    """
+
+    agent_endpoint = os.getenv("GENAI_COMPARISON_RESEARCHER_AGENT_ENDPOINT")
+    agent_key = os.getenv("GENAI_COMPARISON_RESEARCHER_AGENT_KEY")
+
+    client = OpenAI(
+        base_url = agent_endpoint,
+        api_key = agent_key,
+    )
+
+    response = client.chat.completions.create(
+        model = "DeepSeek R1 Distill Llama 70B",
+        messages = [{"role": "user", "content": f"""You are an expert Comparison Report Generator. Your goal is to generate a detailed comparison report between my product and competitors."""}],
+    )
+
+    return response.choices[0].message.content
+
+comparison_analyst = Agent(
+            role="Comparison Report Generator",
+            goal=f"""Compare My Product and {competitor1} and {competitor2}.
+""",
+            backstory="Expert at analyzing product features and capabilities using AI platforms. You have information about my product and competitors",
+        )
+
+comparison_research_task = Task(
+    description="Compare and analyze My Product and competitors",
+    agent=comparison_analyst,
+    expected_output="""Detailed comparison report about My Product and competitors features and capabilities in a table format.
+            You must return a list of comparisons in JSON format where each comparision contains:
+            - Category : category the comparison is about
+            - My_Product : Summary of My Product on the category
+            - Competitor1 : Summary of Competitor 1 on the category
+            - Competitor2 : Summary of Competitor 2 on the category
+
+            Example Output:
+            {
+                "comparisons": [
+                    {
+                        "Category": "Ease of Use",
+                        "My_Product": "High",
+                        "Competitor1": "Very High",
+                        "Competitor2": "Moderate"
+                    },
+                    {
+                        "Category": "Code Suggestions",
+                        "My_Product": "Accurate and Contextual",
+                        "Competitor1": "Highly Accurate",
+                        "Competitor2": "Moderate Accuracy"
+                    }
+                ]
+            }
+            """,
+    output_pydantic=ComparisonList,
+    verbose=True
+)
