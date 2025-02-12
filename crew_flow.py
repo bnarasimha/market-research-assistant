@@ -5,6 +5,7 @@ from crewai.flow.flow import listen, start
 from product_research import product_researcher, product_research_task
 from competitor_research import competitor_analyst, competitor_research_task
 from comparison_report import comparison_analyst, comparison_research_task
+import streamlit as st
 
 load_dotenv()
 
@@ -26,7 +27,10 @@ class MarketResearchAssistant(Flow):
             tasks=[competitor_research_task]
         )
 
-        result = competitor_research_crew.kickoff()
+        competitor1 = st.session_state.get("competitor1")
+        competitor2 = st.session_state.get("competitor2") 
+
+        result = competitor_research_crew.kickoff(inputs={"competitor1": competitor1, "competitor2": competitor2})
         return result
 
     @listen(get_competitor_info)

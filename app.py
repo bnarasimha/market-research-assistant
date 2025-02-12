@@ -93,14 +93,17 @@ if __name__ == "__main__":
         competitor2 = st.text_input("Enter second competitor name", "Cursor")
     
     if st.button("Generate Comparison"):
-        st.session_state.my_product = my_product
-        st.session_state.competitor1 = competitor1
-        st.session_state.competitor2 = competitor2
+        if not my_product or not competitor1 or not competitor2:
+            st.error("Please fill in all product names before generating comparison.")
+        else:
+            st.session_state.my_product = my_product
+            st.session_state.competitor1 = competitor1
+            st.session_state.competitor2 = competitor2
 
-        with st.spinner('Generating Product Comparison Analysis Report'):
-            flow = MarketResearchAssistant()
-            comparison_data = flow.kickoff()  
-            comparison_list = ComparisonList(comparisons=comparison_data["comparisons"])
-            display_comparison_table(comparison_list) 
+            with st.spinner('Generating Product Comparison Analysis Report'):
+                flow = MarketResearchAssistant()
+                comparison_data = flow.kickoff()  
+                comparison_list = ComparisonList(comparisons=comparison_data["comparisons"])
+                display_comparison_table(comparison_list) 
 
 

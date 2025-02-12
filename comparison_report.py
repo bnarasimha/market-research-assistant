@@ -8,8 +8,8 @@ from openai import OpenAI
 from competitor_research import competitor_research_task
 from product_research import product_research_task
 
-competitor1 = st.session_state.get("competitor1", "GitHub Copilot")
-competitor2 = st.session_state.get("competitor2", "Cursor") 
+competitor1 = st.session_state.get("competitor1")
+competitor2 = st.session_state.get("competitor2") 
 
 class Comparison(BaseModel):
     Category: str = Field(..., description="Category of the comparison")
