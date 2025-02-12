@@ -34,8 +34,8 @@ def ComparisionReportTool() -> str:
         str: The detailed comparison report between my product and competitors.
     """
 
-    agent_endpoint = os.getenv("GENAI_COMPARISON_RESEARCHER_AGENT_ENDPOINT")
-    agent_key = os.getenv("GENAI_COMPARISON_RESEARCHER_AGENT_KEY")
+    agent_endpoint = os.getenv("GENAI_COMPARISON_REPORT_AGENT_ENDPOINT")
+    agent_key = os.getenv("GENAI_COMPARISON_REPORT_AGENT_KEY")
 
     client = OpenAI(
         base_url = agent_endpoint,
